@@ -1,52 +1,119 @@
-# Hritik Says 🌐
+# Blog App
 
-Hritik Says is a blog website that highlights the impact of technology on various aspects of life, including workplace innovations, lifestyle changes, and more. It features a modern design with theme-switching capability and interactive search functionality.
+A modern full-stack blog application built with Next.js App Router, MongoDB, and Mongoose.
 
-## Features ✨
+## Tech Stack
 
-- **Responsive Design:** Optimized for devices of all screen sizes. 📱💻
-- **Theme Toggle:** Easily switch between light and dark modes. 🌞🌙
-- **Interactive Search:** Perform Google searches directly from the website. 🔍
-- **Dynamic Content:** Displays current date and year dynamically. 📅
+- Next.js 16 (App Router)
+- React 19
+- Tailwind CSS 4
+- MongoDB + Mongoose
+- Axios
+- React Toastify
+- React Icons
 
-## Files Overview 📂
+## Implemented Features
 
-### 1. `index.html`
-Contains the structure of the website, including sections like:
-- Header with navigation and hero section.
-- Latest posts section displaying blog cards.
-- Footer with contact information, quick links, and a subscription form.
+### Public Blog UI
 
-### 2. `style.css`
-Defines the visual styling of the website, including:
-- Colors, fonts, and layout. 🎨
-- Custom scrollbar styling. 🖱️
-- Utility classes for alignment and responsiveness. 📐
+- Responsive home page with:
+  - Navbar
+  - Header section
+  - Category-based blog filtering
+  - Blog cards with image, date, author, and short description preview
+  - Newsletter subscription UI section
+- Blog cards support HTML descriptions by converting HTML to plain text preview.
 
-### 3. `script.js`
-Adds interactivity to the website:
-- Theme toggling functionality. 🔄
-- Dynamic date and year display. 🕒
-- Google search functionality via a search box. 🌐
+### Blog Details Page
 
-## How to Use 🚀
+- Dynamic route: `/blogs/[id]`
+- Fetches a single blog by ID from API.
+- Renders full HTML blog description as formatted article content.
+- Preserves theme colors and typography in rendered content.
+- Sanitizes incoming HTML before rendering:
+  - Removes `<script>` tags
+  - Removes `<style>` tags
+  - Removes `<!doctype>`, `<html>`, `<head>`, `<body>` wrappers
+  - Removes inline `style="..."` attributes
 
-1. Clone or download the project. 📥
-2. Open the `index.html` file in your browser to view the website. 🌍
-3. Edit the content as needed for your blogs or other purposes. ✏️
+### Admin Panel
 
-## Preview 👀
+- Admin layout with sidebar navigation.
+- Add Blog page (`/admin/addProduct`) includes:
+  - Thumbnail image upload
+  - Title, category, author metadata
+  - HTML description editor
+  - Live HTML preview with app theme styles
+  - Sanitization of HTML before saving
+  - Toast notifications for success/error
 
-![Project Preview](https://github.com/hritik2004-cse/Blog-Website/blob/main/image/preview.png)
+### API + Database
 
-## Installation ⚙️
+- Blog API route: `/api/blog`
+  - `GET /api/blog` -> fetch all blogs
+  - `GET /api/blog?id=<blogId>` -> fetch single blog
+  - `POST /api/blog` -> create blog and upload image to `public/`
+- MongoDB connection helper with global caching to avoid reconnect on hot reload.
+- Mongoose blog schema with fields:
+  - `title`
+  - `description`
+  - `category`
+  - `author`
+  - `image`
+  - `authorImg`
+  - `date`
+  - timestamps (`createdAt`, `updatedAt`)
 
-No additional setup is required. Simply open the `index.html` file in any browser. ✅
+## In Progress / Placeholder Screens
 
-## Contributing 🤝
+- `/admin/blogList` currently placeholder
+- `/admin/subscriptions` currently placeholder
+- `/api/email` folder exists but no endpoint implemented yet
 
-Feel free to fork the project and create a pull request if you have suggestions or enhancements. 💡
+## Getting Started
 
-## License 📜
+### 1. Install dependencies
 
-This project is licensed under the MIT License.
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+Create/update `.env` in the project root:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+```
+
+### 3. Run development server
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Scripts
+
+- `npm run dev` - start development server
+- `npm run build` - build for production
+- `npm run start` - start production server
+- `npm run lint` - run ESLint
+
+## Project Structure (Important Paths)
+
+- `app/page.jsx` - home page
+- `app/blogs/[id]/page.jsx` - blog details page
+- `app/admin/addProduct/page.jsx` - add blog page
+- `app/api/blog/route.js` - blog API
+- `lib/config/db.js` - MongoDB connection helper
+- `lib/models/blog.model.js` - blog schema/model
+- `components/Bloglist.jsx` - list + category filtering
+- `components/Blogitem.jsx` - blog card UI
+
+## Notes
+
+- Blog description supports HTML input and rendering.
+- Theme colors are preserved for rendered blog content.
+- Sanitization is currently regex-based and suitable for controlled/admin content.
