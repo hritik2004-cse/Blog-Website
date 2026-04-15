@@ -207,7 +207,7 @@ const page = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full sm:w-auto flex justify-center items-center gap-2 bg-black text-white text-sm md:text-base lg:text-lg font-medium px-6 py-3 rounded-full hover:bg-slate-800 active:bg-slate-700 transition-all duration-200"
+          className="w-full sm:w-auto flex justify-center items-center gap-2 bg-black text-white text-sm md:text-base lg:text-lg font-medium px-6 py-3 rounded-full hover:bg-slate-800 active:bg-slate-700 transition-all duration-200 capitalize"
         >
           add blog <MdLibraryAdd />
         </button>

@@ -2,6 +2,7 @@ import { ConnectDB } from "@/lib/config/db";
 import { BlogModel } from "@/lib/models/blog.model";
 const { NextResponse } = require("next/server");
 import { writeFile } from "fs/promises";
+const fs = require("fs");
 
 // API endpoint to get all blogs
 export async function GET(req) {
@@ -63,4 +64,14 @@ export async function POST(req) {
   console.log("blog saved");
 
   return NextResponse.json({ success: true, msg: "blog added" });
+}
+
+// API endpoint to delete a perticular blog
+
+export async function DELETE(req) {
+  const id = await req.nextUrl.searchParams.get("id");
+  const blog = await BlogModel.findById(id);
+  fs.unlink(`./public${blog.image}`, ()=>{});
+  await BlogModel.findByIdAndDelete(id);
+  return NextResponse.json({msg:'Blog Deleted'})
 }
