@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { assets } from "@/Assets/assets";
 
 const formatDate = (value) => {
   const date = new Date(value);
@@ -18,18 +19,22 @@ const toPlainText = (value) => {
 
 const Blogitem = ({ blog }) => {
   const blogId = blog._id || blog.id;
-  const authorImage = blog.authorImg || blog.author_img;
+  const coverImage = blog.image || assets.logo;
+  const authorImage = blog.authorImg || blog.author_img || assets.profile_icon;
   const shortDescription = toPlainText(blog.description).slice(0, 140);
 
   return (
-    <div className="bg-white p-3 md:p-4 lg:p-6 rounded-xl hover:shadow-lg cursor-pointer">
+    <article className="bg-white p-3 md:p-4 lg:p-6 rounded-xl hover:shadow-lg cursor-pointer">
       <Link href={`/blogs/${blogId}`}>
         <Image
-          src={blog.image}
+          src={coverImage}
           className="w-full rounded-lg"
           width={200}
           height={100}
-          alt={blog.title}
+          sizes="(max-width: 768px) calc(100vw - 3rem), (max-width: 1200px) calc(50vw - 4rem), 360px"
+          alt={blog.title || "Blog cover image"}
+          style={{ height: "auto" }}
+          loading={coverImage === assets.logo ? "eager" : "lazy"}
         />
 
         <div className="flex items-center justify-between my-2">
@@ -39,7 +44,7 @@ const Blogitem = ({ blog }) => {
           <p className="text-md text-gray-500">{formatDate(blog.date)}</p>
         </div>
 
-        <h3 className="font-bold text-xl my-1">{blog.title}</h3>
+        <h2 className="font-bold text-xl my-1">{blog.title}</h2>
 
         <p className="text-gray-500 text-md mt-1 font-medium">
           {shortDescription}
@@ -51,13 +56,14 @@ const Blogitem = ({ blog }) => {
             src={authorImage}
             width={100}
             height={100}
-            alt="author"
+            sizes="48px"
+            alt={`${blog.author || "Author"} profile photo`}
             className="w-12 h-12 object-cover rounded-full"
           />
           <p className="text-md font-medium text-gray-500">{blog.author}</p>
         </div>
       </Link>
-    </div>
+    </article>
   );
 };
 
