@@ -1,6 +1,6 @@
-# Blog App
+# Hritik.blogs
 
-Blog App is a full-stack content platform built with Next.js App Router, MongoDB, and Mongoose. It includes a public blog experience, a lightweight admin dashboard, newsletter subscriptions, and server-side rendering for the main feed.
+Hritik.blogs is a full-stack content platform built with Next.js App Router, MongoDB, and Mongoose. It includes a public blog experience, a lightweight admin dashboard, newsletter subscriptions, and server-side rendering for the main feed.
 
 ## Overview
 
