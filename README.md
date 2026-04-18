@@ -1,112 +1,68 @@
 # Blog App
 
-A modern full-stack blog application built with Next.js App Router, MongoDB, and Mongoose.
+Blog App is a full-stack content platform built with Next.js App Router, MongoDB, and Mongoose. It includes a public blog experience, a lightweight admin dashboard, newsletter subscriptions, and server-side rendering for the main feed.
 
-## What's New (Latest Update)
+## Overview
 
-- Home page blog data is now server-rendered with ISR (`revalidate = 60`) for faster first load and better LCP.
-- Accessibility improvements across key UI components:
-  - semantic landmarks (`main`, `nav`, `footer`, section labeling)
-  - keyboard-accessible category filter controls
-  - improved heading order and better alt/link labels
-- Performance optimizations:
-  - responsive image delivery improvements with tuned `sizes` and `next.config.mjs` image breakpoints
-  - reduced client-side JS on the main page by replacing `react-icons` in shared public components with inline SVGs
-  - newsletter submit on public home switched from Axios to native `fetch`
-- SEO and crawl updates:
-  - dynamic `robots.txt` via `app/robots.js`
-  - web app manifest added (`app/manifest.webmanifest`)
-- PWA/favicon metadata refreshed with new icon assets wired through `app/layout.jsx`
-- Admin subscriptions management is now implemented at `/admin/subscriptions`
-- API routes now handle database connection and cleanup per request instead of relying on module-load side effects
+The public site focuses on fast reading and simple discovery. The home page loads blog data on the server with ISR, the category filter is keyboard-friendly, and blog cards are optimized for responsive images and concise previews. The blog detail page renders full HTML content with a small sanitization layer to strip unsafe or noisy markup before display.
+
+The admin side provides a focused workflow for creating posts, browsing all posts, and managing newsletter signups. The API routes are designed to connect to MongoDB on demand and clean up uploaded images when posts are deleted.
+
+## Highlights
+
+- Server-rendered home feed with `revalidate = 60` for fresher content and better first paint.
+- Responsive blog cards with tuned `next/image` breakpoints.
+- Category filtering on the homepage.
+- Blog detail pages with HTML rendering and sanitization.
+- Admin tools for adding posts, listing posts, and reviewing subscriptions.
+- Dynamic `robots.txt` and web manifest support.
+- PWA and favicon metadata configured in the app layout.
 
 ## Tech Stack
 
-- Next.js 16 (App Router)
+- Next.js 16
 - React 19
 - Tailwind CSS 4
-- MongoDB + Mongoose
+- MongoDB
+- Mongoose
 - Axios
 - React Toastify
 - React Icons
 
-## Implemented Features
+## App Routes
 
-### Public Blog UI
+### Public
 
-- Responsive home page with:
-  - Navbar
-  - Header section
-  - Category-based blog filtering
-  - Blog cards with image, date, author, and short description preview
-  - Newsletter subscription UI section
-- Blog cards support HTML descriptions by converting HTML to plain text preview.
-- Home page uses server-rendered initial blog payload for faster perceived loading.
-- Newsletter subscription form posts to `/api/email` and stores subscribed emails.
+- `/` - blog homepage
+- `/blogs/[id]` - blog detail page
 
-### Blog Details Page
+### Admin
 
-- Dynamic route: `/blogs/[id]`
-- Fetches a single blog by ID from API.
-- Renders full HTML blog description as formatted article content.
-- Preserves theme colors and typography in rendered content.
-- Sanitizes incoming HTML before rendering:
-  - Removes `<script>` tags
-  - Removes `<style>` tags
-  - Removes `<!doctype>`, `<html>`, `<head>`, `<body>` wrappers
-  - Removes inline `style="..."` attributes
+- `/admin` - admin landing page
+- `/admin/addProduct` - create a new blog post
+- `/admin/blogList` - manage existing posts
+- `/admin/subscriptions` - view and delete newsletter subscribers
 
-### Admin Panel
+### API
 
-- Admin layout with sidebar navigation.
-- Admin dashboard home page (`/admin`) now serves as a lightweight landing screen.
-- Add Blog page (`/admin/addProduct`) includes:
-  - Thumbnail image upload
-  - Title, category, author metadata
-  - HTML description editor
-  - Live HTML preview with app theme styles
-  - Sanitization of HTML before saving
-  - Toast notifications for success/error
-- Blog List page (`/admin/blogList`) includes:
-  - Fetching all blogs
-  - Table view with author/title/date
-  - Blog delete action
-- Subscriptions page route (`/admin/subscriptions`) lists newsletter signups and supports deletion.
+- `/api/blog`
+  - `GET` - fetch all blogs
+  - `GET?id=<blogId>` - fetch a single blog
+  - `POST` - create a blog and upload its image
+  - `DELETE?id=<blogId>` - delete a blog and its image
+- `/api/email`
+  - `GET` - fetch all subscriber emails
+  - `POST` - save a subscriber email
+  - `DELETE?id=<emailId>` - delete a subscriber email
 
-### API + Database
+## Key Behavior
 
-- Blog API route: `/api/blog`
-  - `GET /api/blog` -> fetch all blogs
-  - `GET /api/blog?id=<blogId>` -> fetch single blog
-  - `POST /api/blog` -> create blog and upload image to `public/`
-  - `DELETE /api/blog?id=<blogId>` -> delete blog and image
-- Email API route: `/api/email`
-  - `POST /api/email` -> save newsletter subscriber email
-  - `GET /api/email` -> fetch all subscriber emails
-  - `DELETE /api/email?id=<emailId>` -> delete a subscriber email
-- MongoDB connection helper with global caching to avoid reconnect on hot reload.
-- Mongoose blog schema with fields:
-  - `title`
-  - `description`
-  - `category`
-  - `author`
-  - `image`
-  - `authorImg`
-  - `date`
-  - timestamps (`createdAt`, `updatedAt`)
-
-### Accessibility + Performance + SEO
-
-- Semantic layout and landmark improvements for assistive technologies.
-- Keyboard-accessible controls for blog category filtering.
-- Improved heading hierarchy on public blog cards.
-- Responsive image tuning with custom Next image breakpoints in `next.config.mjs`.
-- Dynamic `robots.txt` support and web manifest integration.
-- Updated favicon/app icon metadata and assets.
-
-## In Progress / Placeholder Screens
-
-- No known placeholder screens remain in the main public/admin flows.
+- Home feed blogs are loaded on the server and sorted by newest first.
+- Blog cards convert stored HTML into a plain-text preview.
+- Blog detail pages sanitize stored HTML before rendering.
+- The add-post form also sanitizes HTML before it reaches the database.
+- Image uploads are written into `public/` so the stored paths can be served directly.
+- MongoDB connections are cached in `lib/config/db.js` to avoid reconnecting on hot reload.
 
 ## Getting Started
 
@@ -118,13 +74,13 @@ npm install
 
 ### 2. Configure environment
 
-Create/update `.env` in the project root:
+Create a `.env` file in the project root:
 
 ```env
 MONGODB_URI=your_mongodb_connection_string
 ```
 
-### 3. Run development server
+### 3. Start the app
 
 ```bash
 npm run dev
@@ -134,32 +90,38 @@ Open `http://localhost:3000`.
 
 ## Scripts
 
-- `npm run dev` - start development server
-- `npm run build` - build for production
-- `npm run start` - start production server
+- `npm run dev` - start the development server
+- `npm run build` - create a production build
+- `npm run start` - run the production server
 - `npm run lint` - run ESLint
 
-## Project Structure (Important Paths)
+## Project Layout
 
-- `app/page.jsx` - home page
-- `app/blogs/[id]/page.jsx` - blog details page
-- `app/admin/addProduct/page.jsx` - add blog page
-- `app/admin/blogList/page.jsx` - admin blog management table
-- `app/admin/subscriptions/page.jsx` - admin subscription management page
+- `app/page.jsx` - homepage data loading and layout
+- `app/blogs/[id]/page.jsx` - blog reader page
 - `app/admin/page.jsx` - admin landing page
-- `app/api/email/route.js` - newsletter subscription API
-- `app/api/blog/route.js` - blog API
-- `app/manifest.webmanifest` - web app manifest
+- `app/admin/addProduct/page.jsx` - blog creation form
+- `app/admin/blogList/page.jsx` - blog management table
+- `app/admin/subscriptions/page.jsx` - subscription management
+- `app/api/blog/route.js` - blog CRUD API
+- `app/api/email/route.js` - subscription API
 - `app/robots.js` - robots.txt generator
+- `app/manifest.webmanifest` - web app manifest
+- `app/layout.jsx` - app metadata and shared layout
 - `lib/config/db.js` - MongoDB connection helper
-- `lib/models/blog.model.js` - blog schema/model
-- `lib/models/email.model.js` - subscriber email schema/model
-- `components/Bloglist.jsx` - list + category filtering
+- `lib/models/blog.model.js` - blog schema
+- `lib/models/email.model.js` - subscriber schema
+- `components/Bloglist.jsx` - homepage filtering and grid
 - `components/Blogitem.jsx` - blog card UI
+- `components/Header.jsx` - homepage hero header
+- `components/Nav.jsx` - top navigation
+- `components/Newsletter.jsx` - newsletter signup UI
+- `components/AdminComponents/Sidebar.jsx` - admin navigation
+- `components/AdminComponents/BlogTable.jsx` - admin blog list rows
+- `components/AdminComponents/SubscriptionTable.jsx` - subscription rows
 
 ## Notes
 
-- Blog description supports HTML input and rendering.
-- Theme colors are preserved for rendered blog content.
-- Sanitization is currently regex-based and suitable for controlled/admin content.
-- `npm run lint` may require TypeScript package presence because of current ESLint/Next config expectations.
+- Content sanitization is intentionally lightweight and regex-based for controlled admin input.
+- The current ESLint setup may require `typescript` to be installed locally before `npm run lint` succeeds.
+- Public and admin UI share the same visual language, so layout and metadata changes in `app/layout.jsx` affect both.
