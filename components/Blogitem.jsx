@@ -33,7 +33,7 @@ const Blogitem = ({ blog }) => {
           height={100}
           sizes="(max-width: 768px) calc(100vw - 3rem), (max-width: 1200px) calc(50vw - 4rem), 360px"
           alt={blog.title || "Blog cover image"}
-          style={{ height: "auto" }}
+          style={{ height: "200px" }}
           loading={coverImage === assets.logo ? "eager" : "lazy"}
         />
 

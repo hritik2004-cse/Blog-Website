@@ -8,7 +8,7 @@ export default function layout({ children }) {
   return (
     <>
       <div className="flex w-full">
-        <ToastContainer theme="light"/>
+        <ToastContainer theme="dark"/>
         <Sidebar />
         <div className="flex bg-[#f9f5ec] flex-col w-full">
           <div className="flex items-center justify-between w-full py-3 px-6 sm:px-8 md:px-12 border-b-2 border-b-black">
