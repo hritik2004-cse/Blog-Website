@@ -17,6 +17,8 @@ A modern full-stack blog application built with Next.js App Router, MongoDB, and
   - dynamic `robots.txt` via `app/robots.js`
   - web app manifest added (`app/manifest.webmanifest`)
 - PWA/favicon metadata refreshed with new icon assets wired through `app/layout.jsx`
+- Admin subscriptions management is now implemented at `/admin/subscriptions`
+- API routes now handle database connection and cleanup per request instead of relying on module-load side effects
 
 ## Tech Stack
 
@@ -57,6 +59,7 @@ A modern full-stack blog application built with Next.js App Router, MongoDB, and
 ### Admin Panel
 
 - Admin layout with sidebar navigation.
+- Admin dashboard home page (`/admin`) now serves as a lightweight landing screen.
 - Add Blog page (`/admin/addProduct`) includes:
   - Thumbnail image upload
   - Title, category, author metadata
@@ -68,7 +71,7 @@ A modern full-stack blog application built with Next.js App Router, MongoDB, and
   - Fetching all blogs
   - Table view with author/title/date
   - Blog delete action
-- Subscriptions page route exists (`/admin/subscriptions`) and can be expanded further.
+- Subscriptions page route (`/admin/subscriptions`) lists newsletter signups and supports deletion.
 
 ### API + Database
 
@@ -79,6 +82,8 @@ A modern full-stack blog application built with Next.js App Router, MongoDB, and
   - `DELETE /api/blog?id=<blogId>` -> delete blog and image
 - Email API route: `/api/email`
   - `POST /api/email` -> save newsletter subscriber email
+  - `GET /api/email` -> fetch all subscriber emails
+  - `DELETE /api/email?id=<emailId>` -> delete a subscriber email
 - MongoDB connection helper with global caching to avoid reconnect on hot reload.
 - Mongoose blog schema with fields:
   - `title`
@@ -101,7 +106,7 @@ A modern full-stack blog application built with Next.js App Router, MongoDB, and
 
 ## In Progress / Placeholder Screens
 
-- `/admin/subscriptions` currently minimal placeholder UI
+- No known placeholder screens remain in the main public/admin flows.
 
 ## Getting Started
 
@@ -140,6 +145,8 @@ Open `http://localhost:3000`.
 - `app/blogs/[id]/page.jsx` - blog details page
 - `app/admin/addProduct/page.jsx` - add blog page
 - `app/admin/blogList/page.jsx` - admin blog management table
+- `app/admin/subscriptions/page.jsx` - admin subscription management page
+- `app/admin/page.jsx` - admin landing page
 - `app/api/email/route.js` - newsletter subscription API
 - `app/api/blog/route.js` - blog API
 - `app/manifest.webmanifest` - web app manifest

@@ -1,8 +1,7 @@
 import { ConnectDB } from "@/lib/config/db";
 import { BlogModel } from "@/lib/models/blog.model";
-const { NextResponse } = require("next/server");
-import { writeFile } from "fs/promises";
-const fs = require("fs");
+import { NextResponse } from "next/server";
+import { unlink, writeFile } from "fs/promises";
 
 // API endpoint to get all blogs
 export async function GET(req) {
@@ -69,9 +68,26 @@ export async function POST(req) {
 // API endpoint to delete a perticular blog
 
 export async function DELETE(req) {
-  const id = await req.nextUrl.searchParams.get("id");
-  const blog = await BlogModel.findById(id);
-  fs.unlink(`./public${blog.image}`, ()=>{});
-  await BlogModel.findByIdAndDelete(id);
-  return NextResponse.json({msg:'Blog Deleted'})
+  try {
+    await ConnectDB();
+    const id = req.nextUrl.searchParams.get("id");
+    const blog = await BlogModel.findById(id).lean();
+
+    if (!blog) {
+      return NextResponse.json({ message: "Blog not found" }, { status: 404 });
+    }
+
+    if (blog.image) {
+      await unlink(`./public${blog.image}`).catch(() => {});
+    }
+
+    await BlogModel.findByIdAndDelete(id);
+    return NextResponse.json({ msg: "Blog Deleted" });
+  } catch (error) {
+    console.error("DELETE /api/blog failed:", error);
+    return NextResponse.json(
+      { message: error?.message || "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }
